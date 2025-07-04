@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Football Lovers Society</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Font for sporty look -->
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet" />
+
+  <!-- AOS Animations -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+  <!-- React -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    body {
+      font-family: 'Bebas Neue', sans-serif;
+    }
+    .section {
+      min-height: 100vh;
+      padding: 4rem 2rem;
+    }
+    .active {
+      border-bottom: 2px solid #3b82f6;
+    }
+    .gallery-item {
+      transition: transform 0.3s ease;
+    }
+    .gallery-item:hover {
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    const App = () => {
+      const [activeSection, setActiveSection] = useState('home');
+      const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+      const scrollToSection = (sectionId) => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+          setActiveSection(sectionId);
+          setIsMenuOpen(false);
+        }
+      };
+
+      useEffect(() => {
+        // Scroll active section logic
+        const handleScroll = () => {
+          const sections = ['home', 'about', 'gallery', 'contact'];
+          for (const section of sections) {
+            const element = document.getElementById(section);
+            if (element) {
+              const rect = element.getBoundingClientRect();
+              if (rect.top <= 100 && rect.bottom >= 100) {
+                setActiveSection(section);
+                break;
+              }
+            }
+          }
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+      }, []);
+
+      useEffect(() => {
+        AOS.init({ duration: 1000 });
+      }, []);
+
+      return (
+        <div className="font-sans">
+          {/* Navbar */}
+          <nav className="bg-green-900 text-white sticky top-0 z-50 shadow-lg">
+            <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+              <div className="flex items-center space-x-2">
+                <img src="https://placehold.co/50x50" alt="Logo" className="h-10 w-10 rounded-full" />
+                <span className="text-2xl font-bold tracking-widest">Football Lovers</span>
+              </div>
+              {/* Desktop Nav */}
+              <div className="hidden md:flex space-x-6">
+                {['home', 'about', 'gallery', 'contact'].map((item) => (
+                  <button
+                    key={item}
+                    onClick={() => scrollToSection(item)}
+                    className={`capitalize px-2 py-1 hover:text-blue-200 transition ${activeSection === item ? 'active text-blue-300' : ''}`}
+                  >
+                    {item}
+                  </button>
+                ))}
+              </div>
+              {/* Mobile Nav Toggle */}
+              <button className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+              </button>
+            </div>
+            {isMenuOpen && (
+              <div className="md:hidden bg-green-800 px-4 py-2">
+                {['home', 'about', 'gallery', 'contact'].map((item) => (
+                  <button
+                    key={item}
+                    onClick={() => scrollToSection(item)}
+                    className={`block w-full text-left capitalize py-2 hover:text-blue-200 transition ${activeSection === item ? 'text-blue-300' : ''}`}
+                  >
+                    {item}
+                  </button>
+                ))}
+              </div>
+            )}
+          </nav>
+
+          {/* Home Section with BG */}
+          <section id="home" className="section text-white bg-cover bg-center flex items-center justify-center" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1508609349937-5ec4ae374ebf?auto=format&fit=crop&w=1950&q=80')" }}>
+            <div className="text-center" data-aos="fade-up">
+              <h1 className="text-5xl md:text-7xl font-bold mb-6">Welcome to Football Lovers</h1>
+              <p className="text-2xl mb-8 max-w-3xl mx-auto">
+                Join the spirit. Play the game. Live the passion.
+              </p>
+              <div className="flex flex-wrap justify-center gap-4">
+                <button onClick={() => scrollToSection('about')} className="bg-white text-green-900 px-6 py-3 rounded-full font-bold hover:bg-gray-200 transition">
+                  Learn More
+                </button>
+                <button onClick={() => scrollToSection('contact')} className="border-2 border-white px-6 py-3 rounded-full font-bold hover:bg-white hover:text-green-900 transition">
+                  Join Us
+                </button>
+              </div>
+            </div>
+          </section>
+
+          {/* About Section */}
+          <section id="about" className="section bg-white">
+            <div className="container mx-auto px-4" data-aos="fade-right">
+              <h2 className="text-4xl font-bold text-center text-green-800 mb-12">About Our Society</h2>
+              <div className="grid md:grid-cols-2 gap-12">
+                <div>
+                  <h3 className="text-2xl text-green-700 font-semibold mb-4">Our Story</h3>
+                  <p className="text-gray-700 mb-4">
+                    Founded in 2010, a passion turned into a movement with 500+ members who breathe football every day.
+                  </p>
+                  <p className="text-gray-700 mb-6">
+                    From tournaments to viewing parties and skills sessions — we bring fans together.
+                  </p>
+                  <h3 className="text-2xl text-green-700 font-semibold mb-4">Our Mission</h3>
+                  <p className="text-gray-700">
+                    To inspire, unite, and grow the football community through events, games, and camaraderie.
+                  </p>
+                </div>
+                <div>
+                  <img src="https://placehold.co/600x400" alt="Football event" className="rounded-xl shadow-xl" />
+                </div>
+              </div>
+
+              <div className="mt-16" data-aos="fade-up">
+                <h3 className="text-2xl font-semibold text-center text-green-700 mb-8">We Offer</h3>
+                <div className="grid md:grid-cols-3 gap-8">
+                  {[
+                    { title: "Weekly Matches", icon: "⚽", desc: "For all skill levels" },
+                    { title: "Viewing Parties", icon: "📺", desc: "Big game nights" },
+                    { title: "Skill Workshops", icon: "🏆", desc: "Train with pros" }
+                  ].map((item, i) => (
+                    <div key={i} className="bg-gray-100 p-6 rounded-lg text-center hover:shadow-md transition transform hover:-translate-y-1 duration-300">
+                      <div className="text-4xl mb-4">{item.icon}</div>
+                      <h4 className="text-xl font-bold text-green-800">{item.title}</h4>
+                      <p className="text-gray-600">{item.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Gallery Section */}
+          <section id="gallery" className="section bg-gray-100">
+            <div className="container mx-auto px-4">
+              <h2 className="text-4xl font-bold text-center text-green-800 mb-12" data-aos="fade-up">Gallery</h2>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[
+                  "Local Match", "Charity Winners", "Youth Clinic",
+                  "Viewing Party", "Women’s Team", "Community Drive"
+                ].map((desc, i) => (
+                  <div key={i} className="gallery-item bg-white rounded-lg shadow-md hover:shadow-xl transition duration-500 transform hover:scale-105" data-aos="zoom-in">
+                    <img src={`https://placehold.co/600x400?text=Photo+${i+1}`} alt={desc} className="w-full h-48 object-cover"/>
+                    <div className="p-4">
+                      <p className="font-semibold text-green-800">{desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* Contact Section */}
+          <section id="contact" className="section bg-green-800 text-white">
+            <div className="container mx-auto px-4" data-aos="fade-left">
+              <h2 className="text-4xl font-bold text-center mb-12">Get In Touch</h2>
+              <div className="grid md:grid-cols-2 gap-12">
+                <div>
+                  <h3 className="text-2xl font-semibold mb-4">Contact Us</h3>
+                  <p className="mb-2">📍 123 Football Ave, Sports City</p>
+                  <p className="mb-2">📞 (123) 456-7890</p>
+                  <p>✉️ info@footballlovers.com</p>
+                </div>
+                <form className="space-y-4">
+                  <input type="text" placeholder="Your Name" className="w-full p-3 rounded bg-green-700 border border-green-600 focus:outline-none"/>
+                  <input type="email" placeholder="Email" className="w-full p-3 rounded bg-green-700 border border-green-600 focus:outline-none"/>
+                  <textarea rows="4" placeholder="Message..." className="w-full p-3 rounded bg-green-700 border border-green-600 focus:outline-none"></textarea>
+                  <button type="submit" className="bg-white text-green-900 font-bold py-2 px-6 rounded hover:bg-gray-200 transition w-full">Submit</button>
+                </form>
+              </div>
+            </div>
+          </section>
+
+          {/* Footer */}
+          <footer className="bg-green-900 text-white py-6">
+            <div className="text-center">
+              <p>© {new Date().getFullYear()} Football Lovers Society. All Rights Reserved.</p>
+            </div>
+          </footer>
+        </div>
+      );
+    };
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
